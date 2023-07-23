@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 This file is responsible for showing a tutorial example of the singleton design pattern.
 """
@@ -6,7 +8,7 @@ This file is responsible for showing a tutorial example of the singleton design 
 import random
 
 #: Classes
-class Antenna():
+class Antenna():  # Singleton class
     """
     Lets say we have a class, Antenna, that can handle the direction of a singlular antenna. Since we do not
     have multiple antennas, and we only have one resource available, we will want to ensure that the class
@@ -95,7 +97,6 @@ if __name__ == "__main__":
     print(f"--------------------------------SECOND EXAMPLE (END) --------------------------------\n\n")
     
     print(f"--------------THIRD EXAMPLE (START) - SHOW SAME OBJECT FOR TWO INSTANCES------------")
-    print(f"current antenna object reference: {antenna.current_inst()}")
+    print(f"current antenna object reference: {antenna.current_inst()} <========")
     new_antenna = Antenna(enforce_singleton=False)
-    print(f"new antenna object reference: {antenna.current_inst()}")
-    print(f"new antenna address: {new_antenna.current_inst()}")
+    print(f"new antenna object reference: {antenna.current_inst()} <========")

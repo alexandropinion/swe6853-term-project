@@ -59,44 +59,49 @@ class Antenna():  # Singleton class
         self.__y_direction = y
         self.__z_direction = z
 
-def create_two_antennas(Antenna: Antenna) -> None:
-    """
-    Example function of a user trying to make two instances of the singleton class, Antenna.
-    We should expect to see an exception being thrown, if the Antenna class has been constructed properly
-    as a singleton.
-    """
-    try:
-        print(f"create_two_antennas(): Direction of the current antenna: {Antenna.current_direction()}")
-        Additional_Antenna = Antenna()
-    except Exception as e:
-        print(f"create_two_antennas(): Error occured: {e} <========")
+class User():
+    def tutorial_example(self) -> None:
+        antenna = Antenna(enforce_singleton=True)
+        print(f"---------FIRST EXAMPLE (START) - ATTEMPT MULTIPLE INSTANTIATIONS ON SINGLETON--------")
+        self.__create_two_antennas(Antenna=antenna)
+        print(f"--------------------------------FIRST EXAMPLE (END) ---------------------------------\n\n")
 
-def new_antenna_direction(Antenna: Antenna) -> None:
-    """
-    We will update the resources inside the singleton and ensure that the updated resource(s) remain
-    for the singular allowable instance of the singleton class.
-    """
-    print(f"new_antenna_direction(): Current antenna direction: {Antenna.current_direction()}")
-    new_x: float = random.random()
-    new_y: float = random.random()
-    new_z: float = random.random()
-    print(f"new_antenna_direction(): The new desired x, y, and z direction for the antenna is: {new_x}, {new_y}, {new_z}")
-    Antenna.update_direction(x=new_x, y=new_y, z=new_z)
-    print(f"new_antenna_direction(): New antenna direction: {Antenna.current_direction()}")
-    print(f"new_antenna_direction(): instance handle: {antenna.current_inst()}")
+        print(f"--------------SECOND EXAMPLE (START) - UPDATE RESOURCE IN SINGLETON CLASS------------")
+        self.__new_antenna_direction(Antenna=Antenna(enforce_singleton=False))
+        print(f"--------------------------------SECOND EXAMPLE (END) --------------------------------\n\n")
+        
+        print(f"--------------THIRD EXAMPLE (START) - SHOW SAME OBJECT FOR TWO INSTANCES------------")
+        print(f"current antenna object reference: {antenna.current_inst()} <========")
+        new_antenna = Antenna(enforce_singleton=False)
+        print(f"new antenna object reference: {antenna.current_inst()} <========")
+
+    def __create_two_antennas(self, Antenna: Antenna) -> None:
+        """
+        Example function of a user trying to make two instances of the singleton class, Antenna.
+        We should expect to see an exception being thrown, if the Antenna class has been constructed properly
+        as a singleton.
+        """
+        try:
+            print(f"create_two_antennas(): Direction of the current antenna: {Antenna.current_direction()}")
+            Additional_Antenna = Antenna()
+        except Exception as e:
+            print(f"create_two_antennas(): Error occured: {e} <========")
+
+    def __new_antenna_direction(self, Antenna: Antenna) -> None:
+        """
+        We will update the resources inside the singleton and ensure that the updated resource(s) remain
+        for the singular allowable instance of the singleton class.
+        """
+        print(f"new_antenna_direction(): Current antenna direction: {Antenna.current_direction()}")
+        new_x: float = random.random()
+        new_y: float = random.random()
+        new_z: float = random.random()
+        print(f"new_antenna_direction(): The new desired x, y, and z direction for the antenna is: {new_x}, {new_y}, {new_z}")
+        Antenna.update_direction(x=new_x, y=new_y, z=new_z)
+        print(f"new_antenna_direction(): New antenna direction: {Antenna.current_direction()}")
+        print(f"new_antenna_direction(): instance handle: {Antenna.current_inst()}")
 
 
 if __name__ == "__main__":
-    antenna = Antenna(enforce_singleton=True)
-    print(f"---------FIRST EXAMPLE (START) - ATTEMPT MULTIPLE INSTANTIATIONS ON SINGLETON--------")
-    create_two_antennas(Antenna=antenna)
-    print(f"--------------------------------FIRST EXAMPLE (END) ---------------------------------\n\n")
-
-    print(f"--------------SECOND EXAMPLE (START) - UPDATE RESOURCE IN SINGLETON CLASS------------")
-    new_antenna_direction(Antenna=Antenna(enforce_singleton=False))
-    print(f"--------------------------------SECOND EXAMPLE (END) --------------------------------\n\n")
-    
-    print(f"--------------THIRD EXAMPLE (START) - SHOW SAME OBJECT FOR TWO INSTANCES------------")
-    print(f"current antenna object reference: {antenna.current_inst()} <========")
-    new_antenna = Antenna(enforce_singleton=False)
-    print(f"new antenna object reference: {antenna.current_inst()} <========")
+    user = User()
+    user.tutorial_example()

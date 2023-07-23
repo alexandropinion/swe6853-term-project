@@ -11,11 +11,16 @@ from typing import Any
 
 
 #: Classes
-class Toy(ABC): # BUILDER CLASS
+class ToyBuilder(ABC): # BUILDER 
+    """
+    The techniques for generating the various components of the Product are specified in the Builder interface. 
+    It describes typical steps to build the Product and abstracts the building process. 
+    It typically contains instructions on how to configure options, set attributes, and assemble the finished product.
+    """
 
     @property
     @abstractmethod
-    def build(self) -> None:
+    def construct(self) -> None:
         pass
 
     @abstractmethod
@@ -31,8 +36,12 @@ class Toy(ABC): # BUILDER CLASS
         pass
 
 
-class ActionFigureBuilder(Toy):
-
+class ActionFigureBuilder(ToyBuilder):  # CONCRETE BUILDER
+    """
+    The classes that implement the Builder interface are called Concrete Builders. 
+    Each Concrete Builder gives the Product specific implementations for building. 
+    They contain the state and logic required to assemble the various Product components.
+    """
     def __init__(self) -> None:
         self.reset()
 
@@ -40,7 +49,7 @@ class ActionFigureBuilder(Toy):
         self._action_fig_blueprint = BluePrint()
 
     @property
-    def build(self) -> ActionFigure:
+    def construct(self) -> ActionFigure:
         finished_blueprint = self._action_fig_blueprint
         self.reset()
         action_fig = ActionFigure(finished_blueprint)
@@ -57,9 +66,21 @@ class ActionFigureBuilder(Toy):
     def add_shoes(self, type: str) -> ActionFigureBuilder:
         self._action_fig_blueprint.modify("Shoes", type)
         return self
+    
+class ActionFigure(): # PRODUCT
+    """
+    Using the Builder pattern, you should produce this sophisticated object. 
+    It normally consists of a number of components or characteristics, and it may come in a variety of forms or variations.
+    """
 
-class BluePrint():
+    def __init__(self, blueprint: BluePrint) -> ActionFigure:
+        self._action_fig = blueprint
 
+    def describe(self) -> str:
+        return f'ActionFigure: {self._action_fig}'
+
+class BluePrint(): # COMPLEX OBJECT
+    
     def __init__(self) -> BluePrint:
         self._blueprint = {}
 
@@ -69,19 +90,21 @@ class BluePrint():
     def __str__(self):
         return str(self._blueprint)
 
-class ActionFigure():
+class Client():
+    """
+    It is the Client's responsibility to build the Product using the Builder pattern. 
+    To build the Product step-by-step, it either constructs a Builder object and provides it to the Director (if one is available) 
+    or utilizes the Builder's methods directly.
+    """
 
-    def __init__(self, blueprint: BluePrint) -> ActionFigure:
-        self._action_fig = blueprint
-
-    def describe(self) -> str:
-        return f'ActionFigure: {self._action_fig}'
-
-#: Functions
-def make_a_toy(config: dict) -> str:
-    builder = ActionFigureBuilder()
-    action_figure = builder.add_hair(config['hair']).add_clothes(config['clothes']).add_shoes(config['shoes']).build
-    return action_figure.describe()
+    def create_a_toy(self, config: dict) -> str:
+        """
+        The Director, which is optional, offers a more advanced interface for building the Product with the Builder. 
+        It conceals the specifics of the building procedure and offers instructions for building the Product in a particular sequence or with a particular configuration.
+        """
+        director = ActionFigureBuilder()
+        action_figure = director.add_hair(config['hair']).add_clothes(config['clothes']).add_shoes(config['shoes']).construct 
+        return action_figure.describe()
 
 #: Variables
 toy_configurations = {
@@ -91,7 +114,8 @@ toy_configurations = {
 }
 
 if __name__ == "__main__":
-    print(make_a_toy(config=toy_configurations["superman"]))
-    print(make_a_toy(config=toy_configurations["batman"]))
-    print(make_a_toy(config=toy_configurations["wonderwoman"]))
+    client = Client()
+    print(client.create_a_toy(config=toy_configurations["superman"]))
+    print(client.create_a_toy(config=toy_configurations["batman"]))
+    print(client.create_a_toy(config=toy_configurations["wonderwoman"]))
     

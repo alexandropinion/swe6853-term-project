@@ -22,8 +22,8 @@ class Cars(ABC): # ABSTRACT FACTORY
 
 class Sedan(ABC): # ABSTRACT PRODUCT
     """
-    The Abstract Factory interface is implemented by Concrete Factory classes. 
-    Each concrete plant is in charge of producing a group of connected goods.
+    These are interfaces or abstract classes that specify the shared methods for the various family members' products. 
+    A family of products has a corresponding Abstract Product for each product type.
     """
 
     def __init__(self) -> None:
@@ -39,8 +39,9 @@ class Sedan(ABC): # ABSTRACT PRODUCT
 
 class SUV(ABC): # ABSTRACT PRODUCT
     """
-    The Abstract Factory interface is implemented by Concrete Factory classes. 
-    Each concrete plant is in charge of producing a group of connected goods.
+    These are interfaces or abstract classes that specify the shared methods for the various family members' products. 
+    A family of products has a corresponding Abstract Product for each product type.
+
     """
 
     def __init__(self) -> None:

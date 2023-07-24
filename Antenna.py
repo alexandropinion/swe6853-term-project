@@ -16,24 +16,29 @@ class Antenna():  # Singleton class
     our one resource, and could break something!
     """
  
-    __public_inst: int = 1 # Keeps up with the instance for this class.
+    __singleton_instance: int = None # Keeps up with the instance for this class.
+
+    def __new__(cls):
+        """
+        This method acts as a static method that will create a new instance of the class by taking in the 
+        current instance of the class that it was called by.  This is how we can ensure that only one 
+        instance of the class is used, and how we can instantiate the singleton.
+        """
+        if cls.__singleton_instance is None:
+            cls.__singleton_instance = super(Antenna, cls).__new__(cls)
+        return cls.__singleton_instance
 
  
-    def __init__(self, enforce_singleton: bool):
+    def __init__(self):
         """
-        Constructor that will enforce the class to only have one instance.
+        Constructor used to initialize class-specific variables.
         """
-        if enforce_singleton:
-            if Antenna.__public_inst != 1:
-                raise TypeError("Cannot instantiate class - class is desined to be a singleton class.")
-            else:
-                Antenna.public_inst = self
         self.__x_direction: float = 0.0
         self.__y_direction: float = 0.0
         self.__z_direction: float = 0.0
 
     def release_singleton(self) -> None:
-        self.__public_inst = None
+        self.__singleton_instance = None
 
     @staticmethod
     def current_inst() -> int:
@@ -41,9 +46,23 @@ class Antenna():  # Singleton class
         This is a static method that allows a user to obtain the private handle used to ensure
         that the instance is unique.
         """
-        if Antenna.public_inst == 1:
+        if Antenna.__singleton_instance == 1:
             Antenna()
-        return Antenna.public_inst
+        return Antenna.__singleton_instance
+    
+    @classmethod
+    def get_instance(cls):
+        """
+        This is the method that should be called in order to instantiate the singleton class.
+        """
+        if cls.__singleton_instance is None:
+            print('Creating new instance')
+            cls.__singleton_instance = cls.__new__(cls)
+        return cls._instance
+    
+    # def get_instance(self) -> int:
+    #     self.__singleton_instance = 1
+    #     return self.__singleton_instance
     
     def current_direction(self) -> tuple:
         """
@@ -61,31 +80,22 @@ class Antenna():  # Singleton class
 
 class User():
     def tutorial_example(self) -> None:
-        antenna = Antenna(enforce_singleton=True)
+        
+        antenna: Antenna = None
+        
         print(f"---------FIRST EXAMPLE (START) - ATTEMPT MULTIPLE INSTANTIATIONS ON SINGLETON--------")
-        self.__create_two_antennas(Antenna=antenna)
+        antenna1 = Antenna()
+        antenna2 = Antenna()
+        print(f"Antenna1 object = {antenna1}  <=========\nAntenna2 object = {antenna2}  <=========\nThey are the same: {antenna1 is antenna2}")
         print(f"--------------------------------FIRST EXAMPLE (END) ---------------------------------\n\n")
 
         print(f"--------------SECOND EXAMPLE (START) - UPDATE RESOURCE IN SINGLETON CLASS------------")
-        self.__new_antenna_direction(Antenna=Antenna(enforce_singleton=False))
+        print(f"Reading antenna 1 and 2's direction, then passing antenna1 a new antenna direction. Lastly, we will read back antenna 2's direction.")
+        print(f"Current antenna 1 direction: {antenna1.current_direction()}\nCurrent antenna 2 direction: {antenna2.current_direction()}")
+        print(f"Updating antenna 1's direction...")
+        self.__new_antenna_direction(Antenna=antenna1)
+        print(f"Reading back antenna 2's direction: {antenna2.current_direction()}")
         print(f"--------------------------------SECOND EXAMPLE (END) --------------------------------\n\n")
-        
-        print(f"--------------THIRD EXAMPLE (START) - SHOW SAME OBJECT FOR TWO INSTANCES------------")
-        print(f"current antenna object reference: {antenna.current_inst()} <========")
-        new_antenna = Antenna(enforce_singleton=False)
-        print(f"new antenna object reference: {antenna.current_inst()} <========")
-
-    def __create_two_antennas(self, Antenna: Antenna) -> None:
-        """
-        Example function of a user trying to make two instances of the singleton class, Antenna.
-        We should expect to see an exception being thrown, if the Antenna class has been constructed properly
-        as a singleton.
-        """
-        try:
-            print(f"create_two_antennas(): Direction of the current antenna: {Antenna.current_direction()}")
-            Additional_Antenna = Antenna()
-        except Exception as e:
-            print(f"create_two_antennas(): Error occured: {e} <========")
 
     def __new_antenna_direction(self, Antenna: Antenna) -> None:
         """
@@ -99,7 +109,6 @@ class User():
         print(f"new_antenna_direction(): The new desired x, y, and z direction for the antenna is: {new_x}, {new_y}, {new_z}")
         Antenna.update_direction(x=new_x, y=new_y, z=new_z)
         print(f"new_antenna_direction(): New antenna direction: {Antenna.current_direction()}")
-        print(f"new_antenna_direction(): instance handle: {Antenna.current_inst()}")
 
 
 if __name__ == "__main__":
